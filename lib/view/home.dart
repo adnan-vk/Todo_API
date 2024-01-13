@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/controller/provider.dart';
 import 'package:todo/view/details.dart';
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
                 child: Consumer<TodoProvider>(builder: (context, value, child) {
                   value.getTasks();
                   return value.notelist.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? Lottie.asset('assets/lottie/Animation - 1705141161396.json',width: double.infinity)
                       : ListView.separated(
                           separatorBuilder: (context, index) {
                             return const Divider(
