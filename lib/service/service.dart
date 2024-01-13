@@ -25,28 +25,31 @@ class TodoService {
 
   createdata(TodoModel value)async{
     try{
-      await dio.post(endpointUrl , data: value.toJson);
+      await dio.post(endpointUrl , data: value.toJson());
     }catch(e){
       throw Exception(e);
     }
   }
 
-  // createNotes(TodoModel value) async {
-  //   try {
-  //     await dio.post(endpointUrl, data: value.toJson());
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
+  deletedata({required id})async{
+    var deleteurl = 'https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id';
+    try{
+      await dio.delete(deleteurl);
+    }catch(e){
+      throw e;
+    }
+  }
 
-  // deleteNotes({required id}) async {
-  //   var deleteUrl = 'https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id';
-  //   try {
-  //     await dio.delete(deleteUrl);
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
+  edittodo({required TodoModel value, required id})async{
+    try{
+      await dio.put('https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id',
+      data: value.toJson()
+      );
+    }catch(e){
+      throw e;
+    }
+
+  }
 
   // editNotes({
   //   required dataModel value,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/controller/provider.dart';
+import 'package:todo/view/details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,29 +29,75 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Consumer<TodoProvider>(builder: (context, value, child) {
                   value.getTasks();
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, mainAxisExtent: 80),
-                    itemBuilder: (context, index) {
-                      final data = value.notelist[index];
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Card(
-                          color: Colors.black38,
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              "${data.subject}",
-                              style: const TextStyle(
-                                  fontSize: 20, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: value.notelist.length,
-                  );
+                  return value.notelist.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView.separated(
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              color: Colors.white,
+                              height: 5,
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            final data = value.notelist.length - index - 1;
+                            final task = value.notelist[data];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Details(),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                color: Colors.black38,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        task.subject.toString(),
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white),
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              var id = task.id;
+                                              value.deletetodo(id);
+                                            },
+                                            icon: const Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              editScreen(
+                                                task.description.toString(),
+                                                task.subject.toString(),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              color: Colors.lightBlue,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          itemCount: value.notelist.length,
+                        );
                 }),
               ),
             ],
@@ -67,7 +114,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void bottomsheet() {
-    final todoprovider = Provider.of<TodoProvider>(context,listen: false);
+    final todoprovider =
+        Provider.of<TodoProvider>(context, listen: false);
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -76,17 +124,72 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               TextFormField(
-                controller:  todoprovider.subjectcontroller,
-                decoration: InputDecoration(
-                  labelText: "Enter the subject"
+                controller: todoprovider.subjectcontroller,
+                decoration: const InputDecoration(
+                  labelText: "Enter the subject",
+                  enabledBorder: OutlineInputBorder(),
                 ),
-              ),SizedBox(height: 20,),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               TextFormField(
-                controller:  todoprovider.subjectcontroller,
+                minLines: 5,
+                maxLines: null,
+                controller: todoprovider.contentcontroller,
                 decoration: InputDecoration(
-                  labelText: "Enter the subject"
+                  labelText: "Enter the Content",
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  todoprovider.createtodo();
+                  Navigator.pop(context);
+                  todoprovider.subjectcontroller.clear();
+                  todoprovider.contentcontroller.clear();
+                },
+                icon: const Icon(Icons.save),
+                label: const Text("SAVE"),
               )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  editScreen(String content, String subject) {
+    final TextEditingController subjectController =
+        TextEditingController(text: subject);
+    final TextEditingController contentController =
+        TextEditingController(text: content);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Edit Screen"),
+          content: Column(
+            children: [
+              TextFormField(
+                controller: subjectController,
+                decoration: InputDecoration(labelText: "Subject"),
+              ),
+              TextFormField(
+                controller: contentController,
+                decoration: InputDecoration(labelText: "Content"),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  // Your update logic here
+                  Navigator.pop(context); // Close the dialog after update
+                },
+                icon: Icon(Icons.update),
+                label: Text("UPDATE"),
+              ),
             ],
           ),
         );
