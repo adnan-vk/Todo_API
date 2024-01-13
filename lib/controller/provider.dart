@@ -13,7 +13,7 @@ class TodoProvider extends ChangeNotifier {
       notelist = await todoservice.getData();
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
     notifyListeners();
   }
@@ -23,26 +23,28 @@ class TodoProvider extends ChangeNotifier {
       await todoservice.createdata(TodoModel(
           subject: subjectcontroller.text,
           description: contentcontroller.text));
-          getTasks();
+      getTasks();
     } catch (e) {
       return null;
     }
   }
 
-  deletetodo(id)async{
-    try{
+  deletetodo(id) async {
+    try {
       await todoservice.deletedata(id: id);
       getTasks();
-    }catch(e){
+    } catch (e) {
       return null;
     }
   }
 
-  edittodo(value , id)async{
-    try{
-      await todoservice.edittodo(value: value, id: id);
+  edittodo(subject,content, id) async {
+    try {
+      await todoservice.edittodo(TodoModel(
+          subject: subject,
+          description: content),id);
       getTasks();
-    }catch(e){
+    } catch (e) {
       return null;
     }
   }

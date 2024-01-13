@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:todo/model/model.dart';
 
-
 class TodoService {
   Dio dio = Dio();
   var endpointUrl = 'https://659fbae85023b02bfe8a5161.mockapi.io/todo';
@@ -23,43 +22,28 @@ class TodoService {
     }
   }
 
-  createdata(TodoModel value)async{
-    try{
-      await dio.post(endpointUrl , data: value.toJson());
-    }catch(e){
+  createdata(TodoModel value) async {
+    try {
+      await dio.post(endpointUrl, data: value.toJson());
+    } catch (e) {
       throw Exception(e);
     }
   }
 
-  deletedata({required id})async{
-    var deleteurl = 'https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id';
-    try{
+  deletedata({required id}) async {
+    var deleteurl = '$endpointUrl/$id';
+    try {
       await dio.delete(deleteurl);
-    }catch(e){
-      throw e;
+    } catch (e) {
+      rethrow;
     }
   }
 
-  edittodo({required TodoModel value, required id})async{
-    try{
-      await dio.put('https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id',
-      data: value.toJson()
-      );
-    }catch(e){
-      throw e;
+  edittodo(TodoModel value, String id) async {
+    try {
+      await dio.put('$endpointUrl/$id', data: value.toJson());
+    } catch (e) {
+      rethrow;
     }
-
   }
-
-  // editNotes({
-  //   required dataModel value,
-  //   required id,
-  // }) async {
-  //   try {
-  //     await dio.put('https://659fbae85023b02bfe8a5161.mockapi.io/todo/$id',
-  //         data: value.toJson());
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
 }
