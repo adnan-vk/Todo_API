@@ -4,14 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:todo/controller/provider.dart';
 import 'package:todo/view/details.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +26,9 @@ class _HomePageState extends State<HomePage> {
                 child: Consumer<TodoProvider>(builder: (context, value, child) {
                   value.getTasks();
                   return value.notelist.isEmpty
-                      ? Lottie.asset('assets/lottie/Animation - 1705141161396.json',width: double.infinity)
+                      ? Lottie.asset(
+                          'assets/lottie/Animation - 1705141161396.json',
+                          width: double.infinity)
                       : ListView.separated(
                           separatorBuilder: (context, index) {
                             return const Divider(
@@ -62,8 +59,7 @@ class _HomePageState extends State<HomePage> {
                                       Text(
                                         task.subject.toString().trim(),
                                         style: const TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.white),
+                                            fontSize: 20, color: Colors.white),
                                       ),
                                       Row(
                                         children: [
@@ -80,10 +76,10 @@ class _HomePageState extends State<HomePage> {
                                           IconButton(
                                             onPressed: () {
                                               editScreen(
-                                                task.description.toString(),
-                                                task.subject.toString(),
-                                                task.id
-                                              );
+                                                  task.description.toString(),
+                                                  task.subject.toString(),
+                                                  task.id,
+                                                  context);
                                             },
                                             icon: const Icon(
                                               Icons.edit,
@@ -108,16 +104,15 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          bottomsheet();
+          bottomsheet(context);
         },
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void bottomsheet() {
-    final todoprovider =
-        Provider.of<TodoProvider>(context, listen: false);
+  void bottomsheet(context) {
+    final todoprovider = Provider.of<TodoProvider>(context, listen: false);
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -164,78 +159,42 @@ class _HomePageState extends State<HomePage> {
   }
 
   // editScreen(String  content, String subject, id) {
-  //   final TextEditingController subjectController =
-  //       TextEditingController(text: subject);
-  //   final TextEditingController contentController =
-  //       TextEditingController(text: content);
+  editScreen(String content, String subject, id, context) {
+    final TextEditingController subjectController =
+        TextEditingController(text: subject);
+    final TextEditingController contentController =
+        TextEditingController(text: content);
 
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: Text("Edit Screen"),
-  //         content: Column(
-  //           children: [
-  //             TextFormField(
-  //               controller: subjectController,
-  //               decoration: InputDecoration(labelText: "Subject"),
-  //             ),
-  //             TextFormField(
-  //               controller: contentController,
-  //               decoration: InputDecoration(labelText: "Content"),
-  //             ),
-  //             ElevatedButton.icon(
-  //               onPressed: () {
-  //                 Provider.of<TodoProvider>(context,listen: false).edittodo(id);
-  //                 Navigator.pop(context); 
-  //               },
-  //               icon: Icon(Icons.update),
-  //               label: Text("UPDATE"),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  editScreen(String content, String subject, id) {
-  final TextEditingController subjectController =
-      TextEditingController(text: subject);
-  final TextEditingController contentController =
-      TextEditingController(text: content);
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Edit Screen"),
-        content: Column(
-          children: [
-            TextFormField(
-              controller: subjectController,
-              decoration: const InputDecoration(labelText: "Subject"),
-            ),
-            TextFormField(
-              controller: contentController,
-              decoration: const InputDecoration(labelText: "Content"),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                String newSubject = subjectController.text.trim();
-                String newContent = contentController.text.trim();
-                Provider.of<TodoProvider>(context, listen: false)
-                    .edittodo(newSubject, newContent, id);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.update),
-              label: const Text("UPDATE"),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Screen"),
+          content: Column(
+            children: [
+              TextFormField(
+                controller: subjectController,
+                decoration: const InputDecoration(labelText: "Subject"),
+              ),
+              TextFormField(
+                controller: contentController,
+                decoration: const InputDecoration(labelText: "Content"),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  String newSubject = subjectController.text.trim();
+                  String newContent = contentController.text.trim();
+                  Provider.of<TodoProvider>(context, listen: false)
+                      .edittodo(newSubject, newContent, id);
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.update),
+                label: const Text("UPDATE"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

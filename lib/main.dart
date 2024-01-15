@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MultiProvider(
+    return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => TodoProvider(),)
+        ChangeNotifierProvider(
+          create: (context) => TodoProvider(),
+        )
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

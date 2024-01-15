@@ -31,9 +31,8 @@ class TodoService {
   }
 
   deletedata({required id}) async {
-    var deleteurl = '$endpointUrl/$id';
     try {
-      await dio.delete(deleteurl);
+      await dio.delete('$endpointUrl/$id');
     } catch (e) {
       rethrow;
     }

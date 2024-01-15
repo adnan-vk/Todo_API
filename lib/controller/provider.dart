@@ -38,11 +38,10 @@ class TodoProvider extends ChangeNotifier {
     }
   }
 
-  edittodo(subject,content, id) async {
+  edittodo(subject, content, id) async {
     try {
-      await todoservice.edittodo(TodoModel(
-          subject: subject,
-          description: content),id);
+      await todoservice.edittodo(
+          TodoModel(subject: subject, description: content), id);
       getTasks();
     } catch (e) {
       return null;
